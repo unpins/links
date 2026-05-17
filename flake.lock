@@ -29,11 +29,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1778991558,
-        "narHash": "sha256-K2n+gV0WnUcM2VwrrIWTSrTNUuouuNw5SgxmIQCbwLM=",
+        "lastModified": 1779043586,
+        "narHash": "sha256-C26tRPT0Wvz7uVqLf6d51FfAY0Sa9ek17kUMErs/CEo=",
         "owner": "unpins",
         "repo": "nix-lib",
-        "rev": "1c9d3ce5d1425c70317c6a713f0e823964549954",
+        "rev": "376a9b3e635af1e2d8cdc4f1c02c0efc5bfc9294",
         "type": "github"
       },
       "original": {
