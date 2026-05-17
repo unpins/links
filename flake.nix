@@ -32,9 +32,12 @@
       name = "links";
       pkgsAttr = "links2";
       windowsCosmo = true;
-      # links uses single-dash flags; `--version` prints "Unknown option"
-      # but exits 0 (which would false-pass), so use `-version`.
+      # links exits 0 even on unknown options (incl. `-version` on the
+      # cosmo Windows .exe), so smoke pairs the args with a stdout
+      # pattern check. "Links 2." matches the `-version` first line on
+      # every platform where the option is honored.
       smoke = [ "-version" ];
+      smokePattern = "Links 2\\.";
       build = pkgs:
         let
           p = pkgs.pkgsStatic;
