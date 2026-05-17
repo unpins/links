@@ -32,12 +32,12 @@
       name = "links";
       pkgsAttr = "links2";
       windowsCosmo = true;
-      # links exits 0 even on unknown options (incl. `-version` on the
-      # cosmo Windows .exe), so smoke pairs the args with a stdout
-      # pattern check. "Links 2." matches the `-version` first line on
-      # every platform where the option is honored.
-      smoke = [ "-version" ];
-      smokePattern = "Links 2\\.";
+      # links exits 0 even on unknown options. `-help` is the option the
+      # binary's own banner advertises (and `-version` is rejected on the
+      # cosmo Windows .exe for reasons still TBD). Pattern matches the
+      # first line of the help banner.
+      smoke = [ "-help" ];
+      smokePattern = "links \\[options\\]";
       build = pkgs:
         let
           p = pkgs.pkgsStatic;
