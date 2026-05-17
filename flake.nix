@@ -25,8 +25,12 @@
   outputs = { self, nixpkgs, unpins-lib }:
     unpins-lib.lib.mkStandaloneFlake {
       inherit self;
-      name = "links2";
-      binName = "links";
+      # User-facing id is `links` (binary, gh repo, artifact). nixpkgs
+      # ships the package as `links2`, so `pkgsAttr` overrides the
+      # lookup (used by mkPkgsCosmo.${pkgsAttr} on Windows; the native
+      # path uses our custom `build` below and bypasses pkgsAttr).
+      name = "links";
+      pkgsAttr = "links2";
       windowsCosmo = true;
       build = pkgs:
         let
