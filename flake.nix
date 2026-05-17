@@ -32,11 +32,11 @@
       name = "links";
       pkgsAttr = "links2";
       windowsCosmo = true;
-      # links exits 0 even on unknown options. `-help` is the option the
-      # binary's own banner advertises (and `-version` is rejected on the
-      # cosmo Windows .exe for reasons still TBD). Pattern matches the
-      # first line of the help banner.
-      smoke = [ "-help" ];
+      # links accepts `-?`, `-h`, `-help`, `--help` (all in links_options[]
+      # default.c:2225). cosmo Windows .exe rejects `-help` and `-version`;
+      # testing `-h` (single-char) probes whether the option table iter
+      # is broken or whether something else trips on multi-char names.
+      smoke = [ "-h" ];
       smokePattern = "links \\[options\\]";
       build = pkgs:
         let
