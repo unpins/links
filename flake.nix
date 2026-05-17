@@ -32,6 +32,9 @@
       name = "links";
       pkgsAttr = "links2";
       windowsCosmo = true;
+      # links uses single-dash flags; `--version` prints "Unknown option"
+      # but exits 0 (which would false-pass), so use `-version`.
+      smoke = [ "-version" ];
       build = pkgs:
         let
           p = pkgs.pkgsStatic;
