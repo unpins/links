@@ -32,12 +32,10 @@
       name = "links";
       pkgsAttr = "links2";
       windowsCosmo = true;
-      # links accepts `-?`, `-h`, `-help`, `--help` (all in links_options[]
-      # default.c:2225). cosmo Windows .exe rejects `-help` and `-version`;
-      # testing `-h` (single-char) probes whether the option table iter
-      # is broken or whether something else trips on multi-char names.
-      smoke = [ "-h" ];
-      smokePattern = "links \\[options\\]";
+      # links uses single-dash flags; pair `-version` with a pattern to
+      # avoid the exit-0 false-pass on unknown options.
+      smoke = [ "-version" ];
+      smokePattern = "Links 2\\.";
       build = pkgs:
         let
           p = pkgs.pkgsStatic;
