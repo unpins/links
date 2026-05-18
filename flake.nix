@@ -20,18 +20,18 @@
   # select() only accepts SOCKETs and links muxes sockets+pipes+console
   # handles through one select() call.
   #
-  # Windows: routed through Cosmopolitan (`windowsCosmo = true`); the
-  # text-only override + apelink lives in `unpins/nix-lib/cosmo/links2.nix`.
+  # Windows: routed through Cosmopolitan (`windowsBuild = import ./cosmo.nix
+  # …`); the text-only override + apelink lives inline in `./cosmo.nix`.
   outputs = { self, nixpkgs, unpins-lib }:
     unpins-lib.lib.mkStandaloneFlake {
       inherit self;
       # User-facing id is `links` (binary, gh repo, artifact). nixpkgs
       # ships the package as `links2`, so `pkgsAttr` overrides the
-      # lookup (used by mkPkgsCosmo.${pkgsAttr} on Windows; the native
-      # path uses our custom `build` below and bypasses pkgsAttr).
+      # lookup (used by cosmoStaticCross.${pkgsAttr} on Windows; the
+      # native path uses our custom `build` below and bypasses pkgsAttr).
       name = "links";
       pkgsAttr = "links2";
-      windowsCosmo = true;
+      windowsBuild = import ./cosmo.nix { inherit unpins-lib; };
       # links uses single-dash flags; pair `-version` with a pattern to
       # avoid the exit-0 false-pass on unknown options.
       smoke = [ "-version" ];
