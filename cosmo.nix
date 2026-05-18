@@ -24,35 +24,28 @@
 { unpins-lib }:
 pkgs:
 let
-  cs = import "${unpins-lib.outPath}/cosmocc.nix" { pkgs = pkgs.buildPackages; };
   cosmoPkgs = unpins-lib.lib.cosmoStaticCross pkgs;
 in
-(cosmoPkgs.links2.override {
-  enableX11 = false;
-  enableFB = false;
-}).overrideAttrs (oa: {
-  buildInputs = with cosmoPkgs; [ openssl zlib bzip2 xz ];
-  propagatedBuildInputs = with cosmoPkgs; [ openssl zlib bzip2 xz ];
-  configureFlags = (oa.configureFlags or [ ]) ++ [
-    "--disable-graphics"
-    "--without-x"
-    "--without-libevent"
-    "--without-brotli"
-    "--without-zstd"
-    "--enable-utf8"
-    "--enable-debuglevel=0"
-  ];
-  postPatch = (oa.postPatch or "") + ''
-    substituteInPlace default.c \
-      --replace-fail \
-        '#if defined(DOS) || defined(OPENVMS)' \
-        '#if defined(DOS) || defined(OPENVMS) || defined(__COSMOPOLITAN__)'
-  '';
-  postFixup = (oa.postFixup or "") + ''
-    ${cs.cosmocc}/bin/apelink \
-      -V ${toString cs.platformBits.windows} \
-      -o $out/bin/links.exe \
-      $out/bin/links
-    rm -f $out/bin/links
-  '';
-})
+unpins-lib.lib.cosmoApelink pkgs { binName = "links"; }
+  ((cosmoPkgs.links2.override {
+    enableX11 = false;
+    enableFB = false;
+  }).overrideAttrs (oa: {
+    buildInputs = with cosmoPkgs; [ openssl zlib bzip2 xz ];
+    propagatedBuildInputs = with cosmoPkgs; [ openssl zlib bzip2 xz ];
+    configureFlags = (oa.configureFlags or [ ]) ++ [
+      "--disable-graphics"
+      "--without-x"
+      "--without-libevent"
+      "--without-brotli"
+      "--without-zstd"
+      "--enable-utf8"
+      "--enable-debuglevel=0"
+    ];
+    postPatch = (oa.postPatch or "") + ''
+      substituteInPlace default.c \
+        --replace-fail \
+          '#if defined(DOS) || defined(OPENVMS)' \
+          '#if defined(DOS) || defined(OPENVMS) || defined(__COSMOPOLITAN__)'
+    '';
+  }))
