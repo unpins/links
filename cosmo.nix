@@ -20,17 +20,17 @@
 # and asking users for `-ssl.builtin-certificates 1` every invocation
 # would be a footgun.
 #
-# apelink ELF -> PE32+ in postFixup, mirroring dash/cosmo.nix.
+# ELF → PE32+ rename to `links.exe` happens automatically via the
+# cosmo cross stdenv's apelink setup hook.
 { unpins-lib }:
 pkgs:
 let
   cosmoPkgs = unpins-lib.lib.cosmoStaticCross pkgs;
 in
-unpins-lib.lib.cosmoApelink pkgs { binName = "links"; }
-  ((cosmoPkgs.links2.override {
-    enableX11 = false;
-    enableFB = false;
-  }).overrideAttrs (oa: {
+(cosmoPkgs.links2.override {
+  enableX11 = false;
+  enableFB = false;
+}).overrideAttrs (oa: {
     buildInputs = with cosmoPkgs; [ openssl zlib bzip2 xz ];
     propagatedBuildInputs = with cosmoPkgs; [ openssl zlib bzip2 xz ];
     configureFlags = (oa.configureFlags or [ ]) ++ [
@@ -48,4 +48,4 @@ unpins-lib.lib.cosmoApelink pkgs { binName = "links"; }
           '#if defined(DOS) || defined(OPENVMS)' \
           '#if defined(DOS) || defined(OPENVMS) || defined(__COSMOPOLITAN__)'
     '';
-  }))
+  })
