@@ -44,7 +44,7 @@ The first invocation will offer to add the [unpins.cachix.org](https://unpins.ca
 
 ## Man pages
 
-`links.1` is embedded in the binary — read with `unpin man links`. The same page rides in the Windows (Cosmopolitan) `links.exe`.
+`links.1` is embedded in the binary — read with `unpin man links`.
 
 ## Manual download
 
