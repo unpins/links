@@ -42,6 +42,10 @@ nix run github:unpins/links
 
 The first invocation will offer to add the [unpins.cachix.org](https://unpins.cachix.org) substituter so most pulls come pre-built.
 
+## Man pages
+
+`links.1` is embedded in the binary — read with `unpin man links`. The same page rides in the Windows (Cosmopolitan) `links.exe`.
+
 ## Manual download
 
-The [Releases](https://github.com/unpins/links/releases) page has standalone binaries and a `.tar.zst` data archive (man pages) for manual download.
+The [Releases](https://github.com/unpins/links/releases) page has standalone binaries for manual download.
