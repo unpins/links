@@ -13,18 +13,18 @@ Text-only build: graphics (X11/framebuffer, libpng/libjpeg/libtiff/libavif/librs
 
 Linux/macOS use `pkgsStatic`. Windows is built via [Cosmopolitan](https://justine.lol/cosmopolitan/) (cosmocc cross-toolchain inside Nix) because mingw's `select()` only accepts SOCKETs, while links muxes sockets+pipes+console handles through a single `select()` call — pure-mingw cross compiles cleanly but dies at runtime with `WSAENOTSOCK`. Cosmocc's libc translates `select()` to `WSAPoll` + `WaitForMultipleObjects`, so the existing event loop works unchanged.
 
-## Installation
+## Usage
 
-Install with [unpin](https://github.com/unpins/unpin):
+Run the `links` program with [unpin](https://github.com/unpins/unpin):
 
 ```bash
-unpin links
+unpin links https://example.com
 ```
 
-Or run without installing:
+To install it onto your PATH:
 
 ```bash
-unpin run links
+unpin install links
 ```
 
 ## Build locally
