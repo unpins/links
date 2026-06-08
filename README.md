@@ -1,13 +1,13 @@
 # links
 
-Standalone build of [Twibright Links](https://links.twibright.com/), a text-mode web browser with HTTPS, gzip and HTTP/1.1 support.
+[Twibright Links](https://links.twibright.com/), a text-mode web browser with HTTPS, gzip and HTTP/1.1 support. A single self-contained binary, built natively for Linux, macOS, and Windows.
 
 [![CI](https://github.com/unpins/links/actions/workflows/links.yml/badge.svg)](https://github.com/unpins/links/actions)
 ![Linux](https://img.shields.io/badge/Linux-✓-success?logo=linux&logoColor=white)
 ![macOS](https://img.shields.io/badge/macOS-✓-success?logo=apple&logoColor=white)
 ![Windows](https://img.shields.io/badge/Windows-✓-success?logo=windows&logoColor=white)
 
-Part of the [unpins](https://unpins.org) project — native single-binary builds with no third-party runtime dependencies.
+Part of the [unpins](https://unpins.org) catalog; install it with [`unpin`](https://github.com/unpins/unpin): `unpin install links`.
 
 Text-only build: graphics (X11/framebuffer, libpng/libjpeg/libtiff/libavif/librsvg) and gpm/libev are stripped from the closure. HTTPS works out of the box via a bundled Mozilla CA bundle (no host `/etc/ssl/certs` required).
 
@@ -27,6 +27,10 @@ To install it onto your PATH:
 unpin install links
 ```
 
+## Man pages
+
+`links.1` is embedded in the binary — read with `unpin man links`.
+
 ## Build locally
 
 ```bash
@@ -41,10 +45,6 @@ nix run github:unpins/links
 ```
 
 The first invocation will offer to add the [unpins.cachix.org](https://unpins.cachix.org) substituter so most pulls come pre-built.
-
-## Man pages
-
-`links.1` is embedded in the binary — read with `unpin man links`.
 
 ## Manual download
 
