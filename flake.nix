@@ -25,6 +25,7 @@
   outputs = { self, nixpkgs, unpins-lib }:
     unpins-lib.lib.mkStandaloneFlake {
       inherit self;
+      dnsFallback = true; # resolves hostnames; opt into the Android DNS fallback
       # User-facing id is `links` (binary, gh repo, artifact). nixpkgs
       # ships the package as `links2`, so `pkgsAttr` overrides the
       # lookup (used by cosmoStaticCross.${pkgsAttr} on Windows; the
