@@ -31,6 +31,12 @@
       # lookup (used by cosmoStaticCross.${pkgsAttr} on Windows; the
       # native path uses our custom `build` below and bypasses pkgsAttr).
       name = "links";
+
+      # Build via the unpin-llvm engine + emit a bitcode multicall module.
+      engine = "unpin-llvm";
+      multicall = {
+        programs = [{ name = "links"; }];
+      };
       pkgsAttr = "links2";
       windowsBuild = import ./cosmo.nix { inherit unpins-lib; };
       # links uses single-dash flags; pair `-version` with a pattern to
@@ -48,6 +54,11 @@
         }).overrideAttrs (old: {
           buildInputs = textInputs;
           propagatedBuildInputs = textInputs;
+          # links2 2.30's hand-written configure only accepts a subset of the
+          # GNU dir flags; the current nixpkgs stdenv auto-adds `--docdir`
+          # (and friends), which it rejects. Drop the auto output-dir flags —
+          # `--prefix` still applies and man installs to $out/share/man.
+          setOutputFlags = false;
           configureFlags = (old.configureFlags or [ ]) ++ [
             "--disable-graphics"
             "--without-x"
