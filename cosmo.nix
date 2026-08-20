@@ -25,7 +25,19 @@
 { unpins-lib }:
 pkgs:
 let
-  cosmoPkgs = unpins-lib.lib.cosmoStaticCross pkgs;
+  # OPENSSLDIR/ENGINESDIR/MODULESDIR default to openssl's own $out, so the .exe
+  # carried a live reference to `openssl-…-cosmo-gnu-3.6.2-etc` -- and unlike
+  # the rsync case this one MATTERS at run time: links is a web browser, and
+  # that directory is where libcrypto looks for the CA trust store. Pointed at
+  # a store path it finds nothing, so HTTPS verification has nowhere to read
+  # certificates from. /etc/ssl is what the engine's native scope already
+  # retargets to set-wide (native-overlay/openssl.nix) and where every distro
+  # keeps them; the standalone `openssl` package does the same for mingw with
+  # C:/ssl. The cosmo scope has no such retarget, so each consumer has to do it
+  # here.
+  cosmoPkgs = (unpins-lib.lib.cosmoStaticCross pkgs).extend (final: prev: {
+    openssl = prev.openssl.overrideAttrs (unpins-lib.lib.retargetOpenssl "/etc/ssl");
+  });
 in
 (cosmoPkgs.links2.override {
   enableX11 = false;
