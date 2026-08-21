@@ -30,13 +30,19 @@ let
   # the rsync case this one MATTERS at run time: links is a web browser, and
   # that directory is where libcrypto looks for the CA trust store. Pointed at
   # a store path it finds nothing, so HTTPS verification has nowhere to read
-  # certificates from. /etc/ssl is what the engine's native scope already
-  # retargets to set-wide (native-overlay/openssl.nix) and where every distro
-  # keeps them; the standalone `openssl` package does the same for mingw with
-  # C:/ssl. The cosmo scope has no such retarget, so each consumer has to do it
-  # here.
+  # certificates from. The cosmo scope has no set-wide retarget (the engine's
+  # native scope has one in native-overlay/openssl.nix), so each consumer does
+  # it here.
+  #
+  # The value is the *Windows* trust dir, not the Linux one: this build is
+  # published only as the windows-x86_64 artifact, and `/etc/ssl` cannot exist
+  # there — a user turning the bundled bundle off (`-ssl.builtin-certificates
+  # 0`) would have nowhere to put a CA file. `/c/ssl` is cosmo's spelling of
+  # `C:\ssl` (cosmocc README: "C:\bin\sh … in Cosmo-speak is /c/bin/sh"), which
+  # is exactly where the mingw consumers point (openssl, opus-tools, rtmpdump,
+  # php, python all use C:/ssl).
   cosmoPkgs = (unpins-lib.lib.cosmoStaticCross pkgs).extend (final: prev: {
-    openssl = prev.openssl.overrideAttrs (unpins-lib.lib.retargetOpenssl "/etc/ssl");
+    openssl = prev.openssl.overrideAttrs (unpins-lib.lib.retargetOpenssl "/c/ssl");
   });
 in
 (cosmoPkgs.links2.override {
