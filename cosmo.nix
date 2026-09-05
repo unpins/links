@@ -49,17 +49,18 @@ in
   enableX11 = false;
   enableFB = false;
 }).overrideAttrs (oa: {
-    buildInputs = with cosmoPkgs; [ openssl zlib bzip2 xz ];
-    propagatedBuildInputs = with cosmoPkgs; [ openssl zlib bzip2 xz ];
+    buildInputs = with cosmoPkgs; [ openssl zlib bzip2 xz brotli zstd ];
+    propagatedBuildInputs = with cosmoPkgs; [ openssl zlib bzip2 xz brotli zstd ];
     configureFlags = (oa.configureFlags or [ ]) ++ [
       "--disable-graphics"
       "--without-x"
       "--without-libevent"
-      "--without-brotli"
-      "--without-zstd"
       "--enable-utf8"
       "--enable-debuglevel=0"
     ];
+    preConfigure = (oa.preConfigure or "") + ''
+      export LIBS="-lbrotlicommon $LIBS"
+    '';
     postPatch = (oa.postPatch or "") + ''
       substituteInPlace default.c \
         --replace-fail \

@@ -46,7 +46,11 @@
       build = pkgs:
         let
           p = pkgs.pkgsStatic;
-          textInputs = [ p.openssl p.zlib p.bzip2 p.xz ];
+          # brotli and zstd are Content-Encodings links 2.30 supports and the
+          # web actually serves; without them in buildInputs its configure
+          # just reported `Supported compression: ZLIB BZIP2 LZMA` and links
+          # never advertised br/zstd in Accept-Encoding.
+          textInputs = [ p.openssl p.zlib p.bzip2 p.xz p.brotli p.zstd ];
         in
         (p.links2.override {
           enableX11 = false;
@@ -59,6 +63,16 @@
           # (and friends), which it rejects. Drop the auto output-dir flags —
           # `--prefix` still applies and man installs to $out/share/man.
           setOutputFlags = false;
+          # `AC_CHECK_LIB(brotlidec, ...)` links -lbrotlidec alone, which
+          # cannot resolve statically: libbrotlidec.a calls into
+          # libbrotlicommon.a. The probe failed and brotli was dropped in
+          # silence. Seeding LIBS puts brotlicommon after brotlidec in every
+          # later link, the final one included. It goes through the
+          # environment because this configure reads `LIBS=...` on the
+          # command line as a host type and discards it with a warning.
+          preConfigure = (old.preConfigure or "") + ''
+            export LIBS="-lbrotlicommon $LIBS"
+          '';
           configureFlags = (old.configureFlags or [ ]) ++ [
             "--disable-graphics"
             "--without-x"

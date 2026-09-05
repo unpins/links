@@ -1,6 +1,6 @@
 # links
 
-[Twibright Links](https://links.twibright.com/), a text-mode web browser with HTTPS, gzip and HTTP/1.1 support. A single self-contained binary, built natively for Linux, macOS, and Windows.
+[Twibright Links](https://links.twibright.com/), a text-mode web browser with HTTPS, HTTP/1.1 and compressed transfers. A single self-contained binary, built natively for Linux, macOS, and Windows.
 
 [![CI](https://github.com/unpins/links/actions/workflows/links.yml/badge.svg)](https://github.com/unpins/links/actions)
 ![Linux](https://img.shields.io/badge/Linux-✓-success?logo=linux&logoColor=white)
@@ -9,9 +9,15 @@
 
 Part of the [unpins](https://unpins.org) catalog; install it with [`unpin`](https://github.com/unpins/unpin): `unpin install links`.
 
-Text-only build: graphics (X11/framebuffer, libpng/libjpeg/libtiff/libavif/librsvg) and gpm/libev are stripped from the closure. HTTPS works out of the box via a bundled Mozilla CA bundle (no host `/etc/ssl/certs` required).
+Text-only build: the graphics mode (X11, framebuffer, image decoding) and mouse
+support are left out, so this is the browser as it runs in a terminal.
 
-Linux/macOS use `pkgsStatic`. Windows is built via [Cosmopolitan](https://justine.lol/cosmopolitan/) (cosmocc cross-toolchain inside Nix) because mingw's `select()` only accepts SOCKETs, while links muxes sockets+pipes+console handles through a single `select()` call — pure-mingw cross compiles cleanly but dies at runtime with `WSAENOTSOCK`. Cosmocc's libc translates `select()` to `WSAPoll` + `WaitForMultipleObjects`, so the existing event loop works unchanged.
+**Certificates.** On Linux and macOS, links verifies HTTPS against the system's
+CA store, the same as your distribution's build. On a machine that has none — a
+minimal container, for instance — pass `-ssl.builtin-certificates 1` to use the
+Mozilla root list that ships inside the binary instead. The Windows build uses
+that built-in list by default, since Windows keeps no CA store where links can
+read it.
 
 ## Usage
 
