@@ -6,11 +6,7 @@
     extra-trusted-public-keys = [ "unpins.cachix.org-1:DDaShjbZ8VvcqxeTcAU3kV9vxZQBlyb7V/uLBHfTynI=" ];
   };
 
-  inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
-    unpins-lib.url = "github:unpins/nix-lib";
-    unpins-lib.inputs.nixpkgs.follows = "nixpkgs";
-  };
+  inputs.unpins-lib.url = "github:unpins/nix-lib";
 
   # Linux/macOS: pkgsStatic.links2 with the graphics chain stripped (no
   # X11/framebuffer, no libpng/libjpeg/libtiff/libavif/librsvg/libev).
@@ -22,7 +18,7 @@
   #
   # Windows: routed through Cosmopolitan (`windowsBuild = import ./cosmo.nix
   # …`); the text-only override + apelink lives inline in `./cosmo.nix`.
-  outputs = { self, nixpkgs, unpins-lib }:
+  outputs = { self, unpins-lib }:
     unpins-lib.lib.mkStandaloneFlake {
       inherit self;
       dnsFallback = true; # resolves hostnames; opt into the Android DNS fallback
