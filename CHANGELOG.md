@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [2.30-2] - 2026-09-26
+
 ### Added
 
 - Pages served with `Content-Encoding: br` (brotli) or `zstd` are now
