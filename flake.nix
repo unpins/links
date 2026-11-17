@@ -46,7 +46,8 @@
           # web actually serves; without them in buildInputs its configure
           # just reported `Supported compression: ZLIB BZIP2 LZMA` and links
           # never advertised br/zstd in Accept-Encoding.
-          textInputs = [ p.openssl p.zlib p.bzip2 p.xz p.brotli p.zstd ];
+          textInputs = [ p.openssl p.zlib p.bzip2 p.xz p.brotli p.zstd p.libev ]
+            ++ pkgs.lib.optionals p.stdenv.hostPlatform.isLinux [ p.gpm ];
         in
         (p.links2.override {
           enableX11 = false;
@@ -71,10 +72,6 @@
           '';
           configureFlags = (old.configureFlags or [ ]) ++ [
             "--disable-graphics"
-            "--without-x"
-            "--without-libevent"
-            "--enable-utf8"
-            "--enable-debuglevel=0"
           ];
         });
     };

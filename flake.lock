@@ -48,11 +48,11 @@
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1792949271,
-        "narHash": "sha256-aBPC+AMpJD+5CKSNmgcT4U2pHrMBG8xUjUoyzcHaM+A=",
+        "lastModified": 1794887601,
+        "narHash": "sha256-nCAKk+BCeTbc8xHRrEldjcOoZqWF3qBbm9JB3GIFX4A=",
         "owner": "unpins",
         "repo": "nix-lib",
-        "rev": "9492742e285843fc4454126d4bb1b2da6a6bf2be",
+        "rev": "fbc0f18338bc469d5b5af273f6eb36579f052a08",
         "type": "github"
       },
       "original": {
