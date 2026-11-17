@@ -13,13 +13,6 @@
 # only accepts SOCKET handles, which is why the pure-mingw cross at
 # playground/links was a dead end).
 #
-# Patch default.c so the bundled Mozilla CA bundle (certs.inc) is on
-# by default — upstream only enables this on DOS/OPENVMS, but our
-# Windows binary has no system CA store path baked in (OPENSSLDIR
-# resolves to /build/cosmos/etc/ssl which doesn't exist at runtime)
-# and asking users for `-ssl.builtin-certificates 1` every invocation
-# would be a footgun.
-#
 # ELF → PE32+ rename to `links.exe` happens automatically via the
 # cosmo cross stdenv's apelink setup hook.
 { unpins-lib }:
@@ -53,18 +46,9 @@ in
     propagatedBuildInputs = with cosmoPkgs; [ openssl zlib bzip2 xz brotli zstd ];
     configureFlags = (oa.configureFlags or [ ]) ++ [
       "--disable-graphics"
-      "--without-x"
       "--without-libevent"
-      "--enable-utf8"
-      "--enable-debuglevel=0"
     ];
     preConfigure = (oa.preConfigure or "") + ''
       export LIBS="-lbrotlicommon $LIBS"
-    '';
-    postPatch = (oa.postPatch or "") + ''
-      substituteInPlace default.c \
-        --replace-fail \
-          '#if defined(DOS) || defined(OPENVMS)' \
-          '#if defined(DOS) || defined(OPENVMS) || defined(__COSMOPOLITAN__)'
     '';
   })
