@@ -9,23 +9,17 @@
   inputs.unpins-lib.url = "github:unpins/nix-lib";
 
   # Linux/macOS: pkgsStatic.links2 with the graphics chain stripped (no
-  # X11/framebuffer, no libpng/libjpeg/libtiff/libavif/librsvg/libev).
-  # --without-libevent makes links fall back to plain select(), which on
-  # cosmocc-Windows is translated to WSAPoll+WaitForMultipleObjects by
-  # cosmo libc — the pure-mingw cross was a dead end because winsock2
-  # select() only accepts SOCKETs and links muxes sockets+pipes+console
-  # handles through one select() call.
+  # X11/framebuffer, no libpng/libjpeg/libtiff/libavif/librsvg); libev and,
+  # on Linux, gpm stay as in nixpkgs.
   #
-  # Windows: routed through Cosmopolitan (`windowsBuild = import ./cosmo.nix
-  # …`); the text-only override + apelink lives inline in `./cosmo.nix`.
+  # Windows: Cosmopolitan, see ./cosmo.nix.
   outputs = { self, unpins-lib }:
     unpins-lib.lib.mkStandaloneFlake {
       inherit self;
       dnsFallback = true; # resolves hostnames; opt into the Android DNS fallback
-      # User-facing id is `links` (binary, gh repo, artifact). nixpkgs
-      # ships the package as `links2`, so `pkgsAttr` overrides the
-      # lookup (used by cosmoStaticCross.${pkgsAttr} on Windows; the
-      # native path uses our custom `build` below and bypasses pkgsAttr).
+      # User-facing id is `links` (binary, gh repo, artifact); nixpkgs calls
+      # it `links2`, which `pkgsAttr` names for nix-lib's nixpkgs lookups
+      # (the Windows man page graft among them).
       name = "links";
 
       # Build via the unpin-llvm engine + emit a bitcode multicall module.

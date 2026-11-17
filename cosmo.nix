@@ -8,32 +8,20 @@
 # graphics libs in the closure — strip propagated too).
 #
 # --without-libevent makes links use plain select(); cosmo libc
-# translates select() to WSAPoll+WaitForMultipleObjects under the hood
-# so the existing event loop "just works" on Windows (mingw select()
-# only accepts SOCKET handles, which is why the pure-mingw cross at
-# playground/links was a dead end).
+# translates select() to WSAPoll+WaitForMultipleObjects, so the event
+# loop works on Windows (mingw select() only accepts SOCKET handles).
 #
 # ELF → PE32+ rename to `links.exe` happens automatically via the
 # cosmo cross stdenv's apelink setup hook.
 { unpins-lib }:
 pkgs:
 let
-  # OPENSSLDIR/ENGINESDIR/MODULESDIR default to openssl's own $out, so the .exe
-  # carried a live reference to `openssl-…-cosmo-gnu-3.6.2-etc` -- and unlike
-  # the rsync case this one MATTERS at run time: links is a web browser, and
-  # that directory is where libcrypto looks for the CA trust store. Pointed at
-  # a store path it finds nothing, so HTTPS verification has nowhere to read
-  # certificates from. The cosmo scope has no set-wide retarget (the engine's
-  # native scope has one in native-overlay/openssl.nix), so each consumer does
-  # it here.
-  #
-  # The value is the *Windows* trust dir, not the Linux one: this build is
-  # published only as the windows-x86_64 artifact, and `/etc/ssl` cannot exist
-  # there — a user turning the bundled bundle off (`-ssl.builtin-certificates
-  # 0`) would have nowhere to put a CA file. `/c/ssl` is cosmo's spelling of
-  # `C:\ssl` (cosmocc README: "C:\bin\sh … in Cosmo-speak is /c/bin/sh"), which
-  # is exactly where the mingw consumers point (openssl, opus-tools, rtmpdump,
-  # php, python all use C:/ssl).
+  # OPENSSLDIR/ENGINESDIR/MODULESDIR default to openssl's own $out, a store
+  # path baked into the .exe. The cosmo scope has no set-wide retarget, so do
+  # it here; `/c/ssl` (cosmo for `C:\ssl`) matches the mingw consumers. It only
+  # moves that string out of the store: retargetOpenssl's CA fallback never
+  # reads OPENSSLDIR on Windows, and HTTPS verifies against its embedded
+  # Mozilla roots (or SSL_CERT_FILE / SSL_CERT_DIR).
   cosmoPkgs = (unpins-lib.lib.cosmoStaticCross pkgs).extend (final: prev: {
     openssl = prev.openssl.overrideAttrs (unpins-lib.lib.retargetOpenssl "/c/ssl");
   });
