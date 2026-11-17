@@ -2,6 +2,22 @@
 
 ## [Unreleased]
 
+### Added
+
+- Linux: mouse support on the text console (gpm), as in distribution builds.
+
+### Changed
+
+- Windows: HTTPS is verified against the Mozilla roots built into the
+  binary's TLS library, the same list Linux and macOS fall back to, rather
+  than links' own bundled copy. `SSL_CERT_FILE` and `SSL_CERT_DIR` name your
+  own CAs.
+
+### Fixed
+
+- The 2.30-2 notes said the Windows build reads a CA store under `C:\ssl`.
+  It never does: any user can create that directory, so it is not trusted.
+
 ## [2.30-2] - 2026-09-26
 
 ### Added

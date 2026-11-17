@@ -9,15 +9,15 @@
 
 Part of the [unpins](https://unpins.org) catalog; install it with [`unpin`](https://github.com/unpins/unpin): `unpin install links`.
 
-Text-only build: the graphics mode (X11, framebuffer, image decoding) and mouse
-support are left out, so this is the browser as it runs in a terminal.
+Text-only build: the graphics mode (X11, framebuffer, image decoding) is left
+out, so this is the browser as it runs in a terminal.
 
 **Certificates.** On Linux and macOS, links verifies HTTPS against the system's
 CA store, the same as your distribution's build. On a machine that has none — a
-minimal container, for instance — pass `-ssl.builtin-certificates 1` to use the
-Mozilla root list that ships inside the binary instead. The Windows build uses
-that built-in list by default, since Windows keeps no CA store where links can
-read it.
+minimal container, for instance — it uses the Mozilla root list built into the
+binary instead. The Windows build always uses that built-in list. To trust your
+own CAs, point `SSL_CERT_FILE` at a PEM bundle or `SSL_CERT_DIR` at a
+directory of certificates.
 
 ## Usage
 
@@ -55,3 +55,12 @@ The first invocation will offer to add the [unpins.cachix.org](https://unpins.ca
 ## Manual download
 
 The [Releases](https://github.com/unpins/links/releases) page has standalone binaries for manual download.
+
+## Build notes
+
+- **Windows:** cosmo, not mingw, because links waits on sockets, pipes and the
+  console in one `select()` call, and mingw's `select()` accepts only sockets.
+- **Not included:** the graphics mode (`links -g`: X11, framebuffer and the
+  image decoders; this is the terminal browser); lzip decompression (off in
+  nixpkgs).
+- **Tests:** links ships no test suite.
